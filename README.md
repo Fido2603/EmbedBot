@@ -1,0 +1,2 @@
+# EmbedBot
+Embeds, fuck yea

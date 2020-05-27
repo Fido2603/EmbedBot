@@ -1,0 +1,45 @@
+{
+  "BotConfig":
+  {
+    "token": "TOKEN"
+  },
+  "Embeds": {
+    "715312411707572316": [
+      {
+        "title": "A nice embed title",
+        "color": "#0000ff",
+        "description": "Wow, this is a kinda nice embed.",
+        "footer": {
+          "text": "Nice guy, man",
+          "icon_url": "https://cdn.discordapp.com/embed/avatars/1.png"
+        },
+        "fields": [
+          {
+            "title": "User #1",
+            "content": "Hero"
+          },
+          {
+            "title": "User #2",
+            "content": "Isla",
+            "inline": false
+          }
+        ]
+      },
+      {
+        "title": "Embed 2",
+        "author": {
+          "name": "Author man",
+          "image": "https://cdn.discordapp.com/embed/avatars/1.png"
+        },
+        "color": "#ff0000",
+        "description": "Mmmhhh",
+        "footer": {
+          "text": "Hahaha",
+          "icon_url": "https://cdn.discordapp.com/embed/avatars/1.png"
+        },
+        "image": "https://media.discordapp.net/attachments/509270402548105216/710923099696136270/hug4.gif",
+        "thumbnail": "https://media.discordapp.net/attachments/221998962247204864/685508062106353672/tumblr_mugvq5dQlR1s5otldo1_500.gif"
+      }
+    ]
+  }
+}
