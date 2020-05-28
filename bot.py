@@ -37,7 +37,7 @@ class DiscordEmbed:
 # Embeds
 async def checkEmbeds():
     # Get embeds from the config
-    with open('config.json') as json_file:
+    with open('config.json', encoding='utf-8') as json_file:
         data = json.load(json_file)
 
         embeds = []
@@ -190,15 +190,17 @@ async def checkEmbeds():
                 embed = channel_embed.embed
                 current_embed_message = None
                 current_embed = None
+                found_embed = False
                 try:
                     current_embed_message = current_botembeds[embed_index]
                     current_embed = current_embed_message.embeds[0]
+                    found_embed = True
                 except IndexError:
                     print("No message for this embed_index yet")
 
                 embed_index += 1
 
-                if current_embed:
+                if found_embed:
                     print("Checking for differences...")
 
                     # Difference checks
@@ -256,10 +258,8 @@ async def checkEmbeds():
                         continue
                     await current_embed_message.edit(embed=embed)
                 else:
+                    print("No current_embed, sending embed")
                     await channel.send(embed=embed)
-
-
-
 
 
 @bot.event
