@@ -1,7 +1,8 @@
 {
   "BotConfig":
   {
-    "token": "TOKEN"
+    "token": "TOKEN",
+    "max_message_checks": 50
   },
   "Embeds": {
     "715312411707572316": [

@@ -3,7 +3,7 @@ from discord.ext import commands
 import os
 import json
 
-bot = commands.Bot(command_prefix=os.getenv('prefix'))
+bot = commands.Bot(command_prefix="")
 
 
 class ConfigEmbed:
