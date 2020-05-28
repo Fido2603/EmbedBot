@@ -1,4 +1,5 @@
 import discord
+from discord import Embed
 from discord.ext import commands
 import os
 import json
@@ -23,6 +24,12 @@ class ConfigEmbed:
         self.authoricon = authoricon
         self.authorurl = authorurl
         self.fields = fields
+
+
+class DiscordEmbed:
+    def __init__(self, channel, embed):
+        self.channel = channel
+        self.embed = embed
 
 
 # Embeds
@@ -85,14 +92,18 @@ async def checkEmbeds():
                 embeds.append(embed)
 
     # Send/check the embeds
+    discord_embeds = []
+    channels = []
     for e in embeds:
         channel = bot.get_channel(int(e.channel))
 
         if channel:
-            title = ""
+            channels.append(channel)
+
+            title = Embed.Empty
             if e.title:
                 title = e.title
-            description = ""
+            description = Embed.Empty
             if e.description:
                 description = e.description
             color = None
@@ -112,10 +123,10 @@ async def checkEmbeds():
                 embed = discord.Embed(title=title, description=description)
 
             # Footer
-            footertext = ""
+            footertext = Embed.Empty
             if e.footertext:
                 footertext = e.footertext
-            footericon = ""
+            footericon = Embed.Empty
             if e.footericon:
                 footericon = e.footericon
 
@@ -132,10 +143,10 @@ async def checkEmbeds():
             authorname = ""
             if e.authorname:
                 authorname = e.authorname
-            authoricon = ""
+            authoricon = Embed.Empty
             if e.authoricon:
                 authoricon = e.authoricon
-            authorurl = ""
+            authorurl = Embed.Empty
             if e.authorurl:
                 authorurl = e.authorurl
 
@@ -146,16 +157,110 @@ async def checkEmbeds():
                 for field in e.fields:
                     embed.add_field(name=field['title'], value=field['content'], inline=field['inline'])
 
-            await channel.send(embed=embed)
+            # Channel
+            discord_embeds.append(DiscordEmbed(channel, embed))
+
+    # Check channels for the embeds
+    channels = set(channels)
+    for channel in channels:
+        channel_embeds = [embed for embed in discord_embeds if embed.channel.id is channel.id]
+
+        with open('config.json') as json_file:
+            data = json.load(json_file)
+
+            history_limit = data['BotConfig']['max_message_checks']
+
+            current_botembeds = []
+            async for message in channel.history(limit=history_limit):
+                if (message.author == bot.user) and (len(message.embeds) >= 1):
+                    current_botembeds.append(message)
+            # Reverse because it reads from the bottom up
+            current_botembeds.reverse()
+
+            embed_index = 0
+            for channel_embed in channel_embeds:
+                embed = channel_embed.embed
+                current_embed_message = None
+                current_embed = None
+                try:
+                    current_embed_message = current_botembeds[embed_index]
+                    current_embed = current_embed_message.embeds[0]
+                except IndexError:
+                    print("No message for this embed_index yet")
+
+                embed_index += 1
+
+                if current_embed:
+                    print("Checking for differences...")
+
+                    # Difference checks
+                    authornamecheck = embed.author.name
+                    if authornamecheck == "":
+                        authornamecheck = Embed.Empty
+
+                    if current_embed.title != embed.title:
+                        print("title difference")
+                    elif current_embed.description != embed.description:
+                        print("description difference")
+                    elif current_embed.color != embed.color:
+                        print("color difference")
+                    elif current_embed.timestamp != embed.timestamp:
+                        print("timestamp difference")
+                    elif current_embed.image.url != embed.image.url:
+                        print("image difference")
+                    elif current_embed.thumbnail.url != embed.thumbnail.url:
+                        print("thumbnail difference")
+                    elif (current_embed.footer.text != embed.footer.text) or (current_embed.footer.icon_url != embed.footer.icon_url):
+                        print("footer difference")
+                    elif (current_embed.author.name != authornamecheck) or (current_embed.author.url != embed.author.url) or (current_embed.author.icon_url != embed.author.icon_url):
+                        print("author difference")
+                    elif current_embed.fields != embed.fields:
+                        if (current_embed.fields == Embed.Empty) and (embed.fields != Embed.Empty):
+                            print("fields difference - old is empty")
+                        elif (current_embed.fields != Embed.Empty) and (embed.fields == Embed.Empty):
+                            print("fields difference - new is empty")
+                        elif len(current_embed.fields) != len(embed.fields):
+                            print("fields difference - len")
+                        else:
+                            field_i = 0
+                            found_difference = False
+                            for current_field in current_embed.fields:
+                                field = embed.fields[field_i]
+
+                                if current_field.name != field.name:
+                                    print("fields difference - name")
+                                    found_difference = True
+                                    break
+                                elif current_field.value != field.value:
+                                    print("fields difference - value")
+                                    found_difference = True
+                                    break
+                                elif current_field.inline != field.inline:
+                                    print("fields difference - inline")
+                                    found_difference = True
+                                    break
+                                field_i += 1
+                            if not found_difference:
+                                print("No differences!")
+                                continue
+                    else:
+                        print("No differences!")
+                        continue
+                    await current_embed_message.edit(embed=embed)
+                else:
+                    await channel.send(embed=embed)
+
+
+
 
 
 @bot.event
 async def on_ready():
     print("EmbedBot has (re)connected to Discord!")
 
-    print("Checking the embeds!")
+    print("> Checking the embeds! <")
     await checkEmbeds()
-    print("Done checking the embeds!")
+    print("> Done checking the embeds! <")
     print("\n")
 
 
