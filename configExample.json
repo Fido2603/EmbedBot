@@ -16,12 +16,12 @@
         },
         "fields": [
           {
-            "title": "User #1",
-            "content": "Hero"
+            "name": "User #1",
+            "value": "Hero"
           },
           {
-            "title": "User #2",
-            "content": "Isla",
+            "name": "User #2",
+            "value": "Isla",
             "inline": false
           }
         ]
@@ -30,7 +30,8 @@
         "title": "Embed 2",
         "author": {
           "name": "Author man",
-          "image": "https://cdn.discordapp.com/embed/avatars/1.png"
+          "icon_url": "https://cdn.discordapp.com/embed/avatars/1.png",
+          "url": "https://discordapp.com/"
         },
         "color": "#ff0000",
         "description": "Mmmhhh",
@@ -39,8 +40,12 @@
           "text": "Hahaha",
           "icon_url": "https://cdn.discordapp.com/embed/avatars/1.png"
         },
-        "image": "https://media.discordapp.net/attachments/509270402548105216/710923099696136270/hug4.gif",
-        "thumbnail": "https://media.discordapp.net/attachments/221998962247204864/685508062106353672/tumblr_mugvq5dQlR1s5otldo1_500.gif"
+        "image": {
+          "url": "https://media.discordapp.net/attachments/509270402548105216/710923099696136270/hug4.gif"
+        },
+        "thumbnail": {
+          "url": "https://media.discordapp.net/attachments/221998962247204864/685508062106353672/tumblr_mugvq5dQlR1s5otldo1_500.gif"
+        }
       }
     ]
   }
