@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import discord
 from discord import Embed
 from discord.ext import commands
@@ -41,8 +43,8 @@ async def checkEmbeds():
         embeds = []
         for channel in data['Embeds']:
             for e in data['Embeds'][channel]:
-                footertext, footerurl, authorname, authorimage, authorurl, title, color, desc, imageurl, thumbnailurl =\
-                    None, None, None, None, None, None, None, None, None, None
+                footertext, footerurl, authorname, authorimage, authorurl, title, color, desc, imageurl, timestamp, \
+                thumbnailurl = None, None, None, None, None, None, None, None, None, None, None
 
                 # Footer and author
                 if 'footer' in e:
@@ -79,6 +81,12 @@ async def checkEmbeds():
                     color = e['color'].replace("#", "")
                 if 'description' in e:
                     desc = e['description']
+                if 'timestamp' in e:
+                    try:
+                        timestamp = datetime.strptime(e['timestamp'], "%Y-%m-%d %H:%M:%S")
+                    except ValueError:
+                        print("Couldn't get timestamp from embed. Timestamp '" + e['timestamp'] + "' doesn't match the "
+                              "format '%Y-%m-%d %H:%M:%S'")
                 if 'image' in e:
                     imageurl = e['image']
                 if 'thumbnail' in e:
@@ -87,7 +95,7 @@ async def checkEmbeds():
                 embed = ConfigEmbed(channelid=channel, title=title, color=color, description=desc,
                                     imageurl=imageurl, thumbnailurl=thumbnailurl, authoricon=authorimage,
                                     authorname=authorname, authorurl=authorurl, footertext=footertext,
-                                    footericon=footerurl, fields=fields)
+                                    footericon=footerurl, fields=fields, timestamp=timestamp)
 
                 embeds.append(embed)
 
